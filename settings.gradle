@@ -1,0 +1,3 @@
+rootProject.name='SLRecyclerView'
+include ':app'
+include ':libslrecyclerview'
