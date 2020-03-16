@@ -7,9 +7,6 @@ import android.widget.RelativeLayout
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.eks.slrecyclerview.R
-import com.eks.slrecyclerview.SLAdapter
-import com.eks.slrecyclerview.SLHolder
 
 /**
  * Created by Riggs on 2020/3/13
@@ -211,10 +208,10 @@ class SLRecyclerView<T> : RelativeLayout {
 //    var srolled: Boolean = false
 
     open inner class RecyclerViewItemTouchListener() : RecyclerView.OnItemTouchListener {
-        private var mClickListener: OnItemViewClickListener? = null
+        private var mClickListener: OnItemViewClickListener<T>? = null
         private var mGestureDetector: GestureDetectorCompat? = null
 
-        constructor(clickListener: OnItemViewClickListener?) : this() {
+        constructor(clickListener: OnItemViewClickListener<T>?) : this() {
             mClickListener = clickListener
             mGestureDetector = GestureDetectorCompat(recyclerView?.context, object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapUp(e: MotionEvent?): Boolean {
@@ -262,16 +259,23 @@ class SLRecyclerView<T> : RelativeLayout {
                     val itemView = recyclerView?.findChildViewUnder(e.x, e.y)
                     if (itemView != null) {
                         //获取item中所有的控件
+                        views.clear()
                         collectChildViews(itemView)
                         //遍历控件集合,找出x y所点击到的控件
-                        val clickedView = findClickedView(e, itemView) ?: itemView
-
-
+//                        val clickedView = findClickedView(e, itemView) ?: itemView
+                        val clickedViews = findClickedViews(e, itemView)
+                        val clickedView: View
+                        clickedView = if (clickedViews.isEmpty()) {
+                            itemView
+                        } else {
+                            clickedViews[0]
+                        }
                         val childAdapterPosition = recyclerView?.getChildAdapterPosition(itemView)
                                 ?: -1
                         if (recyclerView != null && childAdapterPosition != -1) {
                             val data = mAdapter?.getData()?.get(childAdapterPosition)
-                            mClickListener?.onItemViewClick(this@SLRecyclerView, clickedView, data, childAdapterPosition)
+                            val clickBean = ClickBean<T>(this@SLRecyclerView, clickedView, clickedViews, data, childAdapterPosition)
+                            mClickListener?.onItemViewClick(clickBean)
                             return false
                         }
                     }
@@ -286,7 +290,8 @@ class SLRecyclerView<T> : RelativeLayout {
             return false
         }
 
-        private fun findClickedView(e: MotionEvent, itemView: View): View? {
+        private fun findClickedViews(e: MotionEvent, itemView: View): ArrayList<View> {
+            val clickViews = ArrayList<View>()
             //该item顶边所处Y坐标
             val itemBottom = itemView.bottom
             //该item底边所处Y坐标
@@ -314,10 +319,12 @@ class SLRecyclerView<T> : RelativeLayout {
                         && e.x <= view.right + totalOffsetX + translationX
                         && clickY >= view.top + totalOffsetY + translationY
                         && clickY <= view.bottom + totalOffsetY + translationY) {
-                    return view
+                    if (!clickViews.contains(view)) clickViews.add(view)
+//                    return view
                 }
             }
-            return null
+            if (!clickViews.contains(itemView)) clickViews.add(itemView)
+            return clickViews
         }
 
         private var totalOffsetX = 0.0f
@@ -362,11 +369,12 @@ class SLRecyclerView<T> : RelativeLayout {
         }
     }
 
-    interface OnItemViewClickListener {
-        fun onItemViewClick(SLRecyclerView: SLRecyclerView<*>, view: View, data: Any?, position: Int)
+    interface OnItemViewClickListener<T> {
+        //        fun onItemViewClick(SLRecyclerView: SLRecyclerView<T>, viewOnClick: View, viewsOnClick: ArrayList<View>, data: T?, position: Int)
+        fun onItemViewClick(clickBean: ClickBean<T>)
     }
 
-    fun addOnItemTouchListener(onItemViewClickListener: OnItemViewClickListener?) {
+    fun addOnItemTouchListener(onItemViewClickListener: OnItemViewClickListener<T>?) {
         recyclerView?.addOnItemTouchListener(RecyclerViewItemTouchListener(onItemViewClickListener))
     }
 }

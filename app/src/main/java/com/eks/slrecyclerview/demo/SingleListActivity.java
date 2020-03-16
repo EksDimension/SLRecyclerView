@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.eks.slrecyclerview.ClickBean;
 import com.eks.slrecyclerview.SLRecyclerView;
 
 import org.jetbrains.annotations.NotNull;
@@ -44,10 +45,14 @@ public class SingleListActivity extends AppCompatActivity {
     }
 
     private void setListener() {
-        rvOrder.addOnItemTouchListener(new SLRecyclerView.OnItemViewClickListener() {
+        rvOrder.addOnItemTouchListener(new SLRecyclerView.OnItemViewClickListener<OrderBean>() {
             @Override
-            public void onItemViewClick(@NotNull SLRecyclerView<?> SLRecyclerView, @NotNull View view, @org.jetbrains.annotations.Nullable Object data, int position) {
-                Toast.makeText(SingleListActivity.this, "被点击的控件:" + view.getTag() + "\n\nitem数据:" + data.toString() + "\n\n点击item位置:" + position, Toast.LENGTH_LONG).show();
+            public void onItemViewClick(@NotNull ClickBean<OrderBean> clickBean) {
+                StringBuilder sb = new StringBuilder();
+                for (View oneView : clickBean.viewsOnClick) {
+                    sb.append(oneView.getTag()).append("\n");
+                }
+                Toast.makeText(SingleListActivity.this, "直接点击控件:" + clickBean.viewOnClick.getTag() + "\n\n点击范围所有控件:\n" + sb.toString() + "\n\nitem数据:" + clickBean.data + "\n\n点击item位置:" + clickBean.position, Toast.LENGTH_LONG).show();
             }
         });
     }
