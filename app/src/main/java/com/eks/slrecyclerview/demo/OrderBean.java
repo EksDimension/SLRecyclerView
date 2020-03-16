@@ -6,7 +6,7 @@ package com.eks.slrecyclerview.demo;
 public class OrderBean {
 
     private int orderSn;
-    private int orderType;
+    private String orderType;
     private int productImg;
 
     public int getOrderSn() {
@@ -17,11 +17,11 @@ public class OrderBean {
         this.orderSn = orderSn;
     }
 
-    public int getOrderType() {
+    public String getOrderType() {
         return orderType;
     }
 
-    public void setOrderType(int orderType) {
+    public void setOrderType(String orderType) {
         this.orderType = orderType;
     }
 
@@ -33,9 +33,18 @@ public class OrderBean {
         this.productImg = productImg;
     }
 
-    public OrderBean(int orderSn, int orderType, int productImg) {
+    public OrderBean(int orderSn, String orderType, int productImg) {
         this.orderSn = orderSn;
         this.orderType = orderType;
         this.productImg = productImg;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderBean{" +
+                "orderSn=" + orderSn +
+                ", orderType=" + orderType +
+                ", productImg=" + productImg +
+                '}';
     }
 }

@@ -32,6 +32,6 @@ public class OrderAdapter extends SLAdapter<OrderBean> {
 
         ivProductImg.setImageResource(data.getProductImg());
         tvOrderSn.setText(data.getOrderSn()+"");
-        tvOrderType.setText(data.getOrderType()+"");
+        tvOrderType.setText(data.getOrderType());
     }
 }
