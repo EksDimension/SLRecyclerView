@@ -21,9 +21,9 @@ import java.util.ArrayList;
  * Created by Riggs on 3/13/2020
  */
 public class SingleListActivity extends AppCompatActivity {
-    private SLRecyclerView<OrderBean> rvOrder;
-    private OrderAdapter orderAdapter;
-    private ArrayList<OrderBean> orderList = new ArrayList<>();
+    protected SLRecyclerView<OrderBean> rvOrder;
+    protected OrderAdapter orderAdapter;
+    protected ArrayList<OrderBean> orderList = new ArrayList<>();
 
 
     @Override
@@ -37,7 +37,7 @@ public class SingleListActivity extends AppCompatActivity {
     }
 
 
-    private void setAdapter() {
+    protected void setAdapter() {
         orderAdapter = new OrderAdapter(this);
         rvOrder.setLayoutManager(new LinearLayoutManager(this));
         rvOrder.setAdapter(orderAdapter);
@@ -57,7 +57,7 @@ public class SingleListActivity extends AppCompatActivity {
         });
     }
 
-    private void setData() {
+    protected void setData() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -24,5 +24,15 @@
         android:id="@+id/btnCusLEList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="自定义加载/空数据展示" />
+        android:text="默认/自定义 加载/无数据 展示" />
+    <Button
+        android:id="@+id/btnFailedList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="默认/自定义 加载失败 展示" />
+    <Button
+        android:id="@+id/btnFailedInteractiveList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="可交互的自定义加载失败 展示" />
 </LinearLayout>

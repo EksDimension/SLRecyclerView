@@ -19,6 +19,8 @@
         </activity>
         <activity android:name=".DoubleListActivity" />
         <activity android:name=".LEListActivity" />
+        <activity android:name=".FailedListActivity" />
+        <activity android:name=".FailedInteractiveActivity" />
     </application>
 
 </manifest>

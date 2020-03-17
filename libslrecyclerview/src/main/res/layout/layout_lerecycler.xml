@@ -45,4 +45,19 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textSize="18sp" />
     </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_load_failed"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="加载失败"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="18sp" />
+    </RelativeLayout>
 </RelativeLayout>

@@ -30,6 +30,10 @@ class SLRecyclerView<T> : RelativeLayout {
      */
     private var mLoadingView: RelativeLayout? = null
     /**
+     * 正在加载失败的View
+     */
+    private var mLoadFailedView: RelativeLayout? = null
+    /**
      * 是否首次加载
      */
     private var isfirst = true
@@ -45,34 +49,65 @@ class SLRecyclerView<T> : RelativeLayout {
             recyclerView = it.findViewById(R.id.rv)
             mEmptyView = it.findViewById(R.id.rl_empty)
             mLoadingView = it.findViewById(R.id.rl_loading)
+            mLoadFailedView = it.findViewById(R.id.rl_load_failed)
         }
         recyclerView?.addOnScrollListener(ImageAutoLoadScrollListener())
         scaledTouchSlop = ViewConfiguration.get(context).scaledTouchSlop
     }
 
     /**
-     * @param emptyView 空数据资源文件
+     * @param emptyViewRes 空数据资源文件
      */
-    fun setEmptyView(emptyView: Int) {
+    fun setEmptyView(emptyViewRes: Int) {
         mEmptyView?.removeAllViews()
 //        mEmptyView?.addView(LayoutInflater.from(context).inflate(emptyView, null))
-        LayoutInflater.from(context).inflate(emptyView, mEmptyView)
+        LayoutInflater.from(context).inflate(emptyViewRes, mEmptyView)
     }
 
     /**
-     * @param loadingView 加载中资源文件
+     * @param loadingViewRes 加载中资源文件
      */
-    fun setLoadingView(loadingView: Int) {
+    fun setLoadingView(loadingViewRes: Int) {
         mLoadingView?.removeAllViews()
 //        mLoadingView?.addView(LayoutInflater.from(context).inflate(loadingView, null))
-        LayoutInflater.from(context).inflate(loadingView, mLoadingView)
+        LayoutInflater.from(context).inflate(loadingViewRes, mLoadingView)
     }
 
     /**
-     * 显示加载进度条
+     * @param loadFailedViewRes 加载失败资源文件
      */
-    fun showLoadingProgress() {
+    fun setLoadFailedView(loadFailedViewRes: Int) {
+        mLoadFailedView?.removeAllViews()
+        LayoutInflater.from(context).inflate(loadFailedViewRes, mLoadFailedView)
+    }
+
+    /**
+     * @param loadFailedView 加载失败资源文件
+     */
+    fun setLoadFailedView(loadFailedView: View) {
+        mLoadFailedView?.removeAllViews()
+        loadFailedView.layoutParams = mLoadFailedView?.layoutParams
+        mLoadFailedView?.addView(loadFailedView)
+    }
+
+    /**
+     * 显示加载中
+     */
+    fun showLoadingView() {
+        mEmptyView?.visibility = View.GONE
+        recyclerView?.visibility = View.GONE
         mLoadingView?.visibility = View.VISIBLE
+        mLoadFailedView?.visibility = View.GONE
+    }
+
+    /**
+     * 显示加载失败
+     */
+    fun showLoadFailed() {
+        mEmptyView?.visibility = View.GONE
+        recyclerView?.visibility = View.GONE
+        mLoadingView?.visibility = View.GONE
+        mLoadFailedView?.visibility = View.VISIBLE
     }
 
     /**
@@ -89,16 +124,19 @@ class SLRecyclerView<T> : RelativeLayout {
                     mEmptyView?.visibility = View.VISIBLE
                     recyclerView?.visibility = View.GONE
                     mLoadingView?.visibility = View.GONE
+                    mLoadFailedView?.visibility = View.GONE
                 } else {
                     mEmptyView?.visibility = View.GONE
                     recyclerView?.visibility = View.VISIBLE
                     mLoadingView?.visibility = View.GONE
+                    mLoadFailedView?.visibility = View.GONE
                 }
                 if (isfirst) {
                     isfirst = false
                     recyclerView?.visibility = View.GONE
                     mEmptyView?.visibility = View.GONE
                     mLoadingView?.visibility = View.VISIBLE
+                    mLoadFailedView?.visibility = View.GONE
                 }
             }
         }
@@ -142,6 +180,7 @@ class SLRecyclerView<T> : RelativeLayout {
         mAdapter = adapter
         mEmptyView?.visibility = View.GONE
         mLoadingView?.visibility = View.GONE
+        mLoadFailedView?.visibility = View.GONE
         recyclerView?.adapter = adapter
         adapter?.registerAdapterDataObserver(emptyObserver)
         isfirst = false

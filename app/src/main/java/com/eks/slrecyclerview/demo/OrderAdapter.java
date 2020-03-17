@@ -31,7 +31,7 @@ public class OrderAdapter extends SLAdapter<OrderBean> {
         TextView tvOrderType = holder.itemView.findViewById(R.id.tvOrderType);
 
         ivProductImg.setImageResource(data.getProductImg());
-        tvOrderSn.setText(data.getOrderSn()+"");
+        tvOrderSn.setText("单号:"+data.getOrderSn()+"");
         tvOrderType.setText(data.getOrderType());
     }
 }

@@ -34,5 +34,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, LEListActivity.class));
             }
         });
+        Button btnFailedList = findViewById(R.id.btnFailedList);
+        btnFailedList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, FailedListActivity.class));
+            }
+        });
+        Button btnFailedInteractiveList = findViewById(R.id.btnFailedInteractiveList);
+        btnFailedInteractiveList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, FailedInteractiveActivity.class));
+            }
+        });
     }
 }
