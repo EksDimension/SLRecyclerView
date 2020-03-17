@@ -20,5 +20,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, SingleListActivity.class));
             }
         });
+        Button btnDoubleList = findViewById(R.id.btnDoubleList);
+        btnDoubleList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, DoubleListActivity.class));
+            }
+        });
+        Button btnCusLEList = findViewById(R.id.btnCusLEList);
+        btnCusLEList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, LEListActivity.class));
+            }
+        });
     }
 }

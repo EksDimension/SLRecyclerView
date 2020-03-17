@@ -55,7 +55,8 @@ class SLRecyclerView<T> : RelativeLayout {
      */
     fun setEmptyView(emptyView: Int) {
         mEmptyView?.removeAllViews()
-        mEmptyView?.addView(LayoutInflater.from(context).inflate(emptyView, null))
+//        mEmptyView?.addView(LayoutInflater.from(context).inflate(emptyView, null))
+        LayoutInflater.from(context).inflate(emptyView, mEmptyView)
     }
 
     /**
@@ -63,7 +64,8 @@ class SLRecyclerView<T> : RelativeLayout {
      */
     fun setLoadingView(loadingView: Int) {
         mLoadingView?.removeAllViews()
-        mLoadingView?.addView(LayoutInflater.from(context).inflate(loadingView, null))
+//        mLoadingView?.addView(LayoutInflater.from(context).inflate(loadingView, null))
+        LayoutInflater.from(context).inflate(loadingView, mLoadingView)
     }
 
     /**
@@ -292,22 +294,22 @@ class SLRecyclerView<T> : RelativeLayout {
 
         private fun findClickedViews(e: MotionEvent, itemView: View): ArrayList<View> {
             val clickViews = ArrayList<View>()
-            //该item顶边所处Y坐标
-            val itemBottom = itemView.bottom
-            //该item底边所处Y坐标
-            val itemTop = itemView.top
-            val clickY = when {
-                itemBottom > itemView.height -> {//如果底部坐标大于高度,就表示往下走了, 要减去多余空间
-                    val deltaY = itemBottom - itemView.height
-                    e.y - deltaY
-                }
-                itemTop < 0 -> {//如果顶部坐标为负数, 就表示往上走了, 补回缺少空间
-                    val deltaY = -itemTop
-                    e.y + deltaY
-                }
-                else -> //否则就是正好处于最顶部
-                    e.y
-            }
+//            //该item顶边所处Y坐标
+//            val itemBottom = itemView.bottom
+//            //该item底边所处Y坐标
+//            val itemTop = itemView.top
+//            val clickY = when {
+//                itemBottom > itemView.height -> {//如果底部坐标大于高度,就表示往下走了, 要减去多余空间
+//                    val deltaY = itemBottom - itemView.height
+//                    e.y - deltaY
+//                }
+//                itemTop < 0 -> {//如果顶部坐标为负数, 就表示往上走了, 补回缺少空间
+//                    val deltaY = -itemTop
+//                    e.y + deltaY
+//                }
+//                else -> //否则就是正好处于最顶部
+//                    e.y
+//            }
 
             views.forEach { view ->
                 totalOffsetX = 0.0f
@@ -315,10 +317,14 @@ class SLRecyclerView<T> : RelativeLayout {
                 getTotalOffset(view, itemView)
                 val translationX = view.translationX
                 val translationY = view.translationY
-                if (e.x >= view.left + totalOffsetX + translationX
-                        && e.x <= view.right + totalOffsetX + translationX
-                        && clickY >= view.top + totalOffsetY + translationY
-                        && clickY <= view.bottom + totalOffsetY + translationY) {
+                if (e.x >= view.left + totalOffsetX + translationX + (recyclerView?.scrollX
+                                ?: 0)
+                        && e.x <= view.right + totalOffsetX + translationX + (recyclerView?.scrollX
+                                ?: 0)
+                        && e.y >= view.top + totalOffsetY + translationY + (recyclerView?.scrollY
+                                ?: 0)
+                        && e.y <= view.bottom + totalOffsetY + translationY + (recyclerView?.scrollY
+                                ?: 0)) {
                     if (!clickViews.contains(view)) clickViews.add(view)
 //                    return view
                 }
@@ -336,7 +342,8 @@ class SLRecyclerView<T> : RelativeLayout {
         private fun getTotalOffset(view: View, itemView: View) {
             if (view != itemView) {
                 val parentView = view.parent as? View
-                if (parentView != null && parentView != itemView) {
+//                if (parentView != null && parentView != itemView) {
+                if (parentView != null) {
                     totalOffsetX += parentView.left
                     totalOffsetY += parentView.top
                     getTotalOffset(parentView, itemView)
