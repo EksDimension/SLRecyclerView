@@ -249,10 +249,10 @@ class SLRecyclerView<T> : RelativeLayout {
 //    var srolled: Boolean = false
 
     open inner class RecyclerViewItemTouchListener() : RecyclerView.OnItemTouchListener {
-        private var mClickListener: OnItemViewClickListener<T>? = null
+        private var mClickListener: OnItemViewClickListener? = null
         private var mGestureDetector: GestureDetectorCompat? = null
 
-        constructor(clickListener: OnItemViewClickListener<T>?) : this() {
+        constructor(clickListener: OnItemViewClickListener?) : this() {
             mClickListener = clickListener
             mGestureDetector = GestureDetectorCompat(recyclerView?.context, object : GestureDetector.SimpleOnGestureListener() {
                 override fun onSingleTapUp(e: MotionEvent?): Boolean {
@@ -315,7 +315,7 @@ class SLRecyclerView<T> : RelativeLayout {
                                 ?: -1
                         if (recyclerView != null && childAdapterPosition != -1) {
                             val data = mAdapter?.getData()?.get(childAdapterPosition)
-                            val clickBean = ClickBean<T>(this@SLRecyclerView, clickedView, clickedViews, data, childAdapterPosition)
+                            val clickBean = ClickBean(this@SLRecyclerView, clickedView, clickedViews, data, childAdapterPosition)
                             mClickListener?.onItemViewClick(clickBean)
                             return false
                         }
@@ -415,12 +415,12 @@ class SLRecyclerView<T> : RelativeLayout {
         }
     }
 
-    interface OnItemViewClickListener<T> {
+    interface OnItemViewClickListener {
         //        fun onItemViewClick(SLRecyclerView: SLRecyclerView<T>, viewOnClick: View, viewsOnClick: ArrayList<View>, data: T?, position: Int)
-        fun onItemViewClick(clickBean: ClickBean<T>)
+        fun onItemViewClick(clickBean: ClickBean<*>)
     }
 
-    fun addOnItemTouchListener(onItemViewClickListener: OnItemViewClickListener<T>?) {
+    fun addOnItemViewClickListener(onItemViewClickListener: OnItemViewClickListener?) {
         recyclerView?.addOnItemTouchListener(RecyclerViewItemTouchListener(onItemViewClickListener))
     }
 }

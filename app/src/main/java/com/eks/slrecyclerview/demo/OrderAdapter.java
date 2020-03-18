@@ -26,9 +26,9 @@ public class OrderAdapter extends SLAdapter<OrderBean> {
 
     @Override
     public void onBindViewHolder(@NotNull SLHolder holder, @Nullable OrderBean data, int position) {
-        ImageView ivProductImg = holder.itemView.findViewById(R.id.ivProductImg);
-        TextView tvOrderSn = holder.itemView.findViewById(R.id.tvOrderSn);
-        TextView tvOrderType = holder.itemView.findViewById(R.id.tvOrderType);
+        ImageView ivProductImg = getView(R.id.ivProductImg);
+        TextView tvOrderSn = getView(R.id.tvOrderSn);
+        TextView tvOrderType = getView(R.id.tvOrderType);
 
         ivProductImg.setImageResource(data.getProductImg());
         tvOrderSn.setText("单号:"+data.getOrderSn()+"");

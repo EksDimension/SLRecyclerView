@@ -11,29 +11,30 @@ import com.eks.slrecyclerview.SLRecyclerView.OnItemViewClickListener
 import java.util.*
 
 /**
+ * 双列表展示,主要体现用同一个接口实现来接收不同列表的监听事件
  * Created by Riggs on 3/16/2020
  */
 open class DoubleListActivity : AppCompatActivity() {
     protected var rvOrder: SLRecyclerView<OrderBean>? = null
     protected var orderAdapter: OrderAdapter? = null
-    protected val orderList = ArrayList<OrderBean>()
+    private val orderList = ArrayList<OrderBean>()
 
     protected var rvAddress: SLRecyclerView<AddressBean>? = null
     protected var addressAdapter: AddressAdapter? = null
-    protected val addressList = ArrayList<AddressBean>()
+    private val addressList = ArrayList<AddressBean>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_double_list)
-        setRecyclerView()
+        initView()
         setAdapter()
         setListener()
         setOrderData()
         setAddressData()
     }
 
-    open fun setRecyclerView() {
+    open fun initView() {
         rvOrder = findViewById(R.id.rvOrder)
         rvAddress = findViewById(R.id.rvAddress)
     }
@@ -52,24 +53,22 @@ open class DoubleListActivity : AppCompatActivity() {
     }
 
     private fun setListener() {
-        rvOrder?.addOnItemTouchListener(object : OnItemViewClickListener<OrderBean> {
-            override fun onItemViewClick(clickBean: ClickBean<OrderBean>) {
-                val sb = StringBuilder()
-                for (oneView in clickBean.viewsOnClick) {
-                    sb.append(oneView.tag).append("\n")
-                }
-                Toast.makeText(this@DoubleListActivity, "当前列表:" + clickBean.SLRecyclerView.tag + "\n\n直接点击控件:" + clickBean.viewOnClick.tag + "\n\n点击范围所有控件:\n" + sb.toString() + "\n\nitem数据:" + clickBean.data + "\n\n点击item位置:" + clickBean.position, Toast.LENGTH_LONG).show()
+        rvOrder?.addOnItemViewClickListener(mOnItemViewClickListener)
+        rvAddress?.addOnItemViewClickListener(mOnItemViewClickListener)
+    }
+
+    /**
+     * 同一个接口实现,给2个不同数据类型的列表进行同监听
+     * clickBean.data的类型为Any(Java中的Object).
+     */
+    private var mOnItemViewClickListener = object : OnItemViewClickListener {
+        override fun onItemViewClick(clickBean: ClickBean<*>) {
+            val sb = StringBuilder()
+            for (oneView in clickBean.viewsOnClick) {
+                sb.append(oneView.tag).append("\n")
             }
-        })
-        rvAddress?.addOnItemTouchListener(object : OnItemViewClickListener<AddressBean> {
-            override fun onItemViewClick(clickBean: ClickBean<AddressBean>) {
-                val sb = StringBuilder()
-                for (oneView in clickBean.viewsOnClick) {
-                    sb.append(oneView.tag).append("\n")
-                }
-                Toast.makeText(this@DoubleListActivity, "当前列表:" + clickBean.SLRecyclerView.tag + "\n\n直接点击控件:" + clickBean.viewOnClick.tag + "\n\n点击范围所有控件:\n" + sb.toString() + "\n\nitem数据:" + clickBean.data + "\n\n点击item位置:" + clickBean.position, Toast.LENGTH_LONG).show()
-            }
-        })
+            Toast.makeText(this@DoubleListActivity, "当前列表:" + clickBean.sLRecyclerView.tag + "\n\n直接点击控件:" + clickBean.viewOnClick.tag + "\n\n点击范围所有控件:\n" + sb.toString() + "\n\nitem数据类型:" + clickBean.data?.javaClass?.simpleName + "\n\nitem数据:" + clickBean.data + "\n\n点击item位置:" + clickBean.position, Toast.LENGTH_LONG).show()
+        }
     }
 
     open fun setOrderData() {
