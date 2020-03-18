@@ -38,7 +38,7 @@ publish {
     userOrg = 'eksdimension'//bintray.com用户名
     groupId = 'com.eks.view'//jcenter上的路径
     artifactId = 'SLRecyclerView'//项目名称
-    publishVersion = '1.0.0'//版本号
+    publishVersion = '1.0.1'//版本号
     desc = 'A RecyclerView whose items have self-listening ability'//项目描述
     website = 'https://github.com/EksDimension/SLRecyclerView'//github项目网站
 }
