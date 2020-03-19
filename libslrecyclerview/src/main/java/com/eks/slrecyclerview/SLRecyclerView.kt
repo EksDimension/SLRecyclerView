@@ -176,7 +176,7 @@ class SLRecyclerView<T> : RelativeLayout {
      *
      * @param adapter 适配器
      */
-    fun setAdapterWithoutLoadingNoData(adapter: SLAdapter<T>?) {
+    fun setAdapterWithoutLoading(adapter: SLAdapter<T>?) {
         mAdapter = adapter
         mEmptyView?.visibility = View.GONE
         mLoadingView?.visibility = View.GONE
