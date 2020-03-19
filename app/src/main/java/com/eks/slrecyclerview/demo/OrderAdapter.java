@@ -19,19 +19,25 @@ public class OrderAdapter extends SLAdapter<OrderBean> {
         super(context);
     }
 
+    /**
+     * 在这里指定布局样式
+     */
     @Override
     public int setItemLayoutResId() {
         return R.layout.item_order;
     }
 
+    /**
+     * 在这里进行控件数据设值
+     */
     @Override
     public void onBindViewHolder(@NotNull SLHolder holder, @Nullable OrderBean data, int position) {
-        ImageView ivProductImg = getView(R.id.ivProductImg);
-        TextView tvOrderSn = getView(R.id.tvOrderSn);
-        TextView tvOrderType = getView(R.id.tvOrderType);
-
-        ivProductImg.setImageResource(data.getProductImg());
-        tvOrderSn.setText("单号:"+data.getOrderSn()+"");
-        tvOrderType.setText(data.getOrderType());
+        /**
+         * 这里提供一个叫 getView(Int resId) 的方法,作用类似于findViewById
+         * 而该方法拥有复用功能,多次执行也不用担心浪费资源损耗性能.推荐使用.
+         */
+        ((ImageView) getView(R.id.ivProductImg)).setImageResource(data.getProductImg());
+        ((TextView) getView(R.id.tvOrderSn)).setText("单号:" + data.getOrderSn() + "");
+        ((TextView) getView(R.id.tvOrderType)).setText(data.getOrderType());
     }
 }

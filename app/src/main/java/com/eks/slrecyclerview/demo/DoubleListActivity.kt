@@ -42,14 +42,14 @@ open class DoubleListActivity : AppCompatActivity() {
 
     private fun setAdapter() {
         orderAdapter = OrderAdapter(this)
+        orderAdapter?.setData(orderList)
         rvOrder?.setLayoutManager(LinearLayoutManager(this))
         rvOrder?.setAdapter(orderAdapter)
-        orderAdapter?.setData(orderList)
 
         addressAdapter = AddressAdapter(this)
+        addressAdapter?.setData(addressList)
         rvAddress?.setLayoutManager(LinearLayoutManager(this))
         rvAddress?.setAdapter(addressAdapter)
-        addressAdapter?.setData(addressList)
     }
 
     private fun setListener() {
@@ -67,7 +67,7 @@ open class DoubleListActivity : AppCompatActivity() {
             for (oneView in clickBean.viewsOnClick) {
                 sb.append(oneView.tag).append("\n")
             }
-            Toast.makeText(this@DoubleListActivity, "当前列表:" + clickBean.sLRecyclerView.tag + "\n\n直接点击控件:" + clickBean.viewOnClick.tag + "\n\n点击范围所有控件:\n" + sb.toString() + "\n\nitem数据类型:" + clickBean.data?.javaClass?.simpleName + "\n\nitem数据:" + clickBean.data + "\n\n点击item位置:" + clickBean.position, Toast.LENGTH_LONG).show()
+            Toast.makeText(this@DoubleListActivity, "当前列表:${clickBean.sLRecyclerView.tag}\n\n直接点击控件:${clickBean.viewOnClick.tag}\n\n点击范围所有控件:\n${sb}\n\nitem数据类型:${clickBean.data?.javaClass?.simpleName}\n\nitem数据:${clickBean.data}\n\n点击item位置:${clickBean.position}", Toast.LENGTH_LONG).show()
         }
     }
 

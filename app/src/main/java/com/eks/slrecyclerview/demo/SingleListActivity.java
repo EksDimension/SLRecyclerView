@@ -32,7 +32,7 @@ public class SingleListActivity extends AppCompatActivity {
      */
     protected OrderAdapter orderAdapter;
     /**
-     * 列表数据,要以ArrayList为类型,注意泛型要与SLRecyclerView指定的一致,即列表数据item的bean类型
+     * 列表数据,要以集合为类型,注意泛型要与SLRecyclerView指定的一致,即列表数据item的bean类型
      */
     protected ArrayList<OrderBean> orderList = new ArrayList<>();
 
@@ -53,18 +53,16 @@ public class SingleListActivity extends AppCompatActivity {
     }
 
     protected void setAdapter() {
-        //RecyclerView和adapter的构造及 LayoutManager设置之类的, 跟原始RecyclerView和Adapter基本一致.
-        //没什么特别
         orderAdapter = new OrderAdapter(this);
+        //关键代码adapter.setData(dataList)，执行该方法进行数据绑定
+        //而其他的代码看起来都跟原生RecyclerView Adapter很像,几乎没区别
+        orderAdapter.setData(orderList);
         rvOrder.setLayoutManager(new LinearLayoutManager(this));
         rvOrder.setAdapter(orderAdapter);
-
-        //关键代码adapter.setData(dataList)
-        //执行该方法进行数据绑定, 建议在执行setAdapter()后 且请求数据之前执行
-        orderAdapter.setData(orderList);
     }
 
     private void setListener() {
+        //核心代码，监听列表
         //itemView点击监听的设置, 传入OnItemViewClickListener接口
         rvOrder.addOnItemViewClickListener(new SLRecyclerView.OnItemViewClickListener() {
             /**
@@ -88,7 +86,7 @@ public class SingleListActivity extends AppCompatActivity {
 
     /**
      * 这里只是模拟异步加载数据.
-     * 只要在怼数据源进行修改后, 执行adapter.notifyDataSetChanged()即可.
+     * 只要在对数据源进行修改后, 执行adapter.notifyDataSetChanged()即可.
      */
     protected void setData() {
         new Handler().postDelayed(new Runnable() {
