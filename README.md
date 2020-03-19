@@ -1,6 +1,6 @@
 # SLRecyclerView
 
-### 你是否有过这种烦恼？
+### 一、你是否有过这种烦恼？
 在MVC、MVP模式碰上列表页面开发时，特别是Item复杂，按键事件交互繁多的需求时，需要在Adapter对每个控件进行setOnClickListener()进行监听设置。
 
 又为了把事件传递给Activity/Fragment，专门设置接口进行交互而产生了接口地狱，又或者动用到广播导致注册/注销难以管理、甚至乎使用eventbus第三方框架。
@@ -12,7 +12,7 @@
 
 ------------
 
-### 简介：
+### 二、简介：
 
 #### SLRecyclerView是什么、自监听是啥、使用复杂么？
 
@@ -31,11 +31,11 @@ SLRecyclerView是一款针对在传统MVC、MVP开发模式下（熟悉MVVM流�
 当然，针对一些静态数据的列表，可能用不着上述切换展示的功能，所以也提供了对应的API进行使用，后面将会讲到。
 
 ------------
-###[演示Demo.apk下载](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/testDemo.apk?raw=true)
+### [演示Demo.apk下载](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/testDemo.apk?raw=true)
 
 ------------
 
-### 引用依赖：
+### 三、引用依赖：
 | [ ![Download](https://api.bintray.com/packages/eksdimension/maven/SLRecyclerView/images/download.svg)](https://bintray.com/eksdimension/maven/SLRecyclerView/_latestVersionn) | latestVersion|
 |--------|----|
 ##### Gradle工程
@@ -53,9 +53,9 @@ implementation 'com.eks.view:SLRecyclerView:latestVersion'
 ```
 
 ------------
-### 基本使用：
+### 四、基本使用：
 
-> #### 案例一：单一列表，监听列表点击事件
+> ### 案例一：单一列表，监听列表点击事件
 
 ![案例一](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/singlelist.gif?raw=true "案例一")
 
@@ -242,11 +242,11 @@ public class OrderAdapter extends SLAdapter<OrderBean> {
 
 
 
-> #### 案例二：同一个接口实现监听双列表（多个也行）点击事件。
+> ### 案例二：同一个接口实现监听双列表（多个也行）点击事件。
 
 ![](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/doublelist.gif?raw=true)
 
-##### 为节省篇幅，从本案例起，仅列出Activity示范类，其余Adapter、xml暂不展示
+##### 为节省篇幅，从本案例起，仅列出Activity示范类，并使用kotlin演示。其余Adapter、xml暂不展示。
 
 ```java
 open class DoubleListActivity : AppCompatActivity() {
@@ -286,10 +286,105 @@ open class DoubleListActivity : AppCompatActivity() {
 
 ------------
 
-### 自定义“正在加载”与“没有数据”及“加载失败”界面
+### 五、进阶使用，自定义“正在加载”与“没有数据”及“加载失败”界面：
 
-> #### 案例一：让列表展示"正在加载/没有数据"。
+> ### 案例一：让列表展示"正在加载/没有数据"。
 加载图--左上自定义 右下默认
 无数据--左上默认 右下自定义。
 
 ![](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/lelist.gif?raw=true)
+
+```java
+class LEListActivity : DoubleListActivity() {
+    override fun initView() {
+        super.initView()
+        rvOrder?.setLoadingView(R.layout.loading_bilibili)//设置自定义的资源布局作为加载页
+        rvAddress?.setEmptyView(R.layout.nodata_c)//设置自定义的资源布局作为空数据页
+    }
+
+    override fun setOrderData() {
+        Handler().postDelayed({
+            //执行该方法后,会因data数据为空,而自动从加载中切换成无数据页面
+            //若data数据不为空,则会展示实际列表
+            orderAdapter?.notifyDataSetChanged()
+        }, 1500)
+    }
+
+    override fun setAddressData() {
+        Handler().postDelayed({
+            //执行该方法后,会因data数据为空,而自动从加载中切换成无数据页面
+            //若data数据不为空,则会展示实际列表
+            addressAdapter?.notifyDataSetChanged()
+        }, 2500)
+    }
+
+}
+```
+
+> ### 案例二：让列表展示“加载失败”。
+左上自定义 右下默认
+
+![](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/failedlist.gif?raw=true)
+
+```java
+class FailedListActivity : DoubleListActivity() {
+    override fun initView() {
+        super.initView()
+        rvOrder?.setLoadFailedView(R.layout.failed_bilibili)//设置自定义的资源布局作为加载失败页
+    }
+
+    override fun setOrderData() {
+        Handler().postDelayed({
+            //执行showLoadFailed()会自动切换成加载失败页面
+            rvOrder?.showLoadFailed()
+        }, 1500)
+    }
+
+    override fun setAddressData() {
+        Handler().postDelayed({
+            //执行showLoadFailed()会自动切换成加载失败页面
+            rvAddress?.showLoadFailed()
+        }, 2500)
+    }
+
+}
+```
+
+
+> ### 案例三：让列表展示自定义的"加载失败"界面,并拥有交互性。
+
+![](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/failedinteractivelist.gif?raw=true)
+
+```java
+class FailedInteractiveActivity : SingleListActivity() {
+
+    override fun setAdapter() {
+        super.setAdapter()
+        //同样是执行setLoadFailedView()方法,但以View作为传入参数.
+        //在View上自定义交互控件以及编写交互事件,即可在加载失败后进行交互操作.
+        val failedView = View.inflate(this, R.layout.failed_bilibili_interactive, null)
+        failedView.findViewById<Button>(R.id.btnRetry).setOnClickListener { retry() }
+        rvOrder?.setLoadFailedView(failedView)
+    }
+
+
+    override fun setData() {
+        Handler().postDelayed({
+            rvOrder?.showLoadFailed()
+        }, 1500)
+    }
+
+    /**
+     * 此处模拟加载失败后,点击按钮进行重试的情形
+     * 而重试过程中需要显示"正在加载",因此需要手动调用showLoadingView()
+     */
+    private fun retry() {
+        rvOrder?.showLoadingView()
+        Handler().postDelayed({
+            ...
+            ...
+            orderAdapter.notifyDataSetChanged()
+        }, 1500)
+    }
+}
+```
