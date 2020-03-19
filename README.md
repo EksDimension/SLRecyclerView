@@ -113,12 +113,11 @@ public class SingleListActivity extends AppCompatActivity {
         //RecyclerView和adapter的构造及 LayoutManager设置之类的, 跟原始RecyclerView和Adapter基本一致.
         //没什么特别
         orderAdapter = new OrderAdapter(this);
+        //关键代码adapter.setData(dataList)
+        //执行该方法进行数据绑定
+        orderAdapter.setData(orderList);
         rvOrder.setLayoutManager(new LinearLayoutManager(this));
         rvOrder.setAdapter(orderAdapter);
-
-        //关键代码adapter.setData(dataList)
-        //执行该方法进行数据绑定, 建议在执行setAdapter()后 且请求数据之前执行
-        orderAdapter.setData(orderList);
     }
 
     private void setListener() {
@@ -128,6 +127,7 @@ public class SingleListActivity extends AppCompatActivity {
             /**
              * 点击回调监听
              * @param clickBean 点击回调封装信息,里面封装了所有与点击相关的信息.
+             *                  开发者可以根据实际情况进行信息抽取.
              */
             @Override
             public void onItemViewClick(@NotNull ClickBean<?> clickBean) {
@@ -388,3 +388,32 @@ class FailedInteractiveActivity : SingleListActivity() {
     }
 }
 ```
+
+------------
+
+### 六、关键API：
+
+##### 类SLRecyclerView
+
+| 方法 | 意义  |  参数说明  |
+| ------------ | ------------ | ------------ |
+| setAdapter(adapter: SLAdapter<T>)  |  为该列表设置适配器。执行该方法后，数据展示之前，会自动展示“正在加载”界面。一般用于异步加载。  | 继承自SLAdapter的适配器 |
+| setAdapterWithoutLoading(adapter: SLAdapter<T>)  |  为该列表设置适配器。执行该方法后，会默认隐藏“正在加载”界面。一般用于异步加载。  | 继承自SLAdapter的适配器 |
+| setAdapterAndNotify(adapter: SLAdapter<T>)  |  为该列表设置适配器。该方法会直接展示列表数据，同样默认隐藏“正在加载”界面，一般用于同步加载。比如静态数据加载。  | 继承自SLAdapter的适配器 |
+| setEmptyView(emptyViewRes: Int)  |  为该列表添加“无数据”展示界面，不执行则以默认样式展示。  | 要求传入layout资源布局 |
+| setLoadingView(loadingViewRes: Int)  |  为该列表添加“正在加载”展示界面，不执行则以默认样式展示。  |  要求传入layout资源布局 |
+| setLoadFailedView(loadFailedViewRes: Int)  |  为该列表添加“加载失败”展示界面，不执行则以默认样式展示。  |  要求传入layout资源布局 |
+| setLoadFailedView(loadFailedView: View)  |  为该列表添加“加载失败”展示界面，并可在界面上作自定义交互事件，不执行则以默认样式展示。  |  要求传入View  |
+| showLoadingView()  |  手动展示“正在加载”界面。注：只有通过setAdapter()设置适配器，才会setAdapter后首次自动展示，其余情况均必须手动执行才能展示。  |    |
+| showLoadFailed()  |  手动展示“加载”界面。  |    |
+| addOnItemViewClickListener(onItemViewClickListener: OnItemViewClickListener)  |  对该列表item中所有view进行监听器，。  |  OnItemViewClickListener实现对象  |
+
+##### 接口OnItemViewClickListener中的回调返回对象ClickBean< T >
+
+| 属性 | 意义  |
+| ------------ | ------------ |
+| sLRecyclerView: SLRecyclerView< T >  |  当前点击所处的RecylerView对象  |
+| viewOnClick: View  |  当前item上被直接点击的View  |
+| viewsOnClick: ArrayList<View>  |  当前item中,摆放在点击位置的上所有的View集合  |
+| data: T?  |  当前item的数据  |
+| position: Int  |  当前item的position位置  |
