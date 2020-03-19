@@ -10,6 +10,8 @@
 #### 如果有，那希望能帮到你。 I've got a present for ya.
 ###### 这里有一款也许能帮到你的控件 —— SLRecyclerView
 
+### [演示Demo.apk下载](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/testDemo.apk?raw=true)
+
 ------------
 
 ### 二、简介：
@@ -29,9 +31,6 @@ SLRecyclerView是一款针对在传统MVC、MVP开发模式下（熟悉MVVM流�
 除了自监听功能，这款控件还支持“正在加载”、“无数据”及“加载失败”三种界面的切换展示功能。控件中已附带最基础的默认样式，同时提供API供开发者自行设置，只需传入对应布局文件或View即可生效。
 
 当然，针对一些静态数据的列表，可能用不着上述切换展示的功能，所以也提供了对应的API进行使用，后面将会讲到。
-
-------------
-### [演示Demo.apk下载](https://github.com/EksDimension/ProjectResouce/blob/master/SLRecyclerView/testDemo.apk?raw=true)
 
 ------------
 
@@ -89,7 +88,7 @@ public class SingleListActivity extends AppCompatActivity {
      */
     protected OrderAdapter orderAdapter;
     /**
-     * 列表数据,要以ArrayList为类型,注意泛型要与SLRecyclerView指定的一致,即列表数据item的bean类型
+     * 列表数据,要以集合为类型,注意泛型要与SLRecyclerView指定的一致,即列表数据item的bean类型
      */
     protected ArrayList<OrderBean> orderList = new ArrayList<>();
 
@@ -127,7 +126,7 @@ public class SingleListActivity extends AppCompatActivity {
             /**
              * 点击回调监听
              * @param clickBean 点击回调封装信息,里面封装了所有与点击相关的信息.
-             *                  开发者可以根据实际情况进行信息抽取.
+             *                  ClickBean详解请见本文后方的“API”小节
              */
             @Override
             public void onItemViewClick(@NotNull ClickBean<?> clickBean) {
@@ -391,15 +390,17 @@ class FailedInteractiveActivity : SingleListActivity() {
 
 ------------
 
-### 六、关键API：
+### 六、API：
 
-##### 类SLRecyclerView
+##### 下方出现的< T >泛型，特指传入列表的数据类型
+
+##### 类SLRecyclerView< T >
 
 | 方法 | 意义  |  参数说明  |
 | ------------ | ------------ | ------------ |
-| setAdapter(adapter: SLAdapter<T>)  |  为该列表设置适配器。执行该方法后，数据展示之前，会自动展示“正在加载”界面。一般用于异步加载。  | 继承自SLAdapter的适配器 |
-| setAdapterWithoutLoading(adapter: SLAdapter<T>)  |  为该列表设置适配器。执行该方法后，会默认隐藏“正在加载”界面。一般用于异步加载。  | 继承自SLAdapter的适配器 |
-| setAdapterAndNotify(adapter: SLAdapter<T>)  |  为该列表设置适配器。该方法会直接展示列表数据，同样默认隐藏“正在加载”界面，一般用于同步加载。比如静态数据加载。  | 继承自SLAdapter的适配器 |
+| setAdapter(adapter: SLAdapter< T >)  |  为该列表设置适配器。执行该方法后，数据展示之前，会自动展示“正在加载”界面。一般用于异步加载。  | 继承自SLAdapter的适配器 |
+| setAdapterWithoutLoading(adapter: SLAdapter< T >)  |  为该列表设置适配器。执行该方法后，会默认隐藏“正在加载”界面。一般用于异步加载。  | 继承自SLAdapter的适配器 |
+| setAdapterAndNotify(adapter: SLAdapter< T >)  |  为该列表设置适配器。该方法会直接展示列表数据，同样默认隐藏“正在加载”界面，一般用于同步加载。比如静态数据加载。  | 继承自SLAdapter的适配器 |
 | setEmptyView(emptyViewRes: Int)  |  为该列表添加“无数据”展示界面，不执行则以默认样式展示。  | 要求传入layout资源布局 |
 | setLoadingView(loadingViewRes: Int)  |  为该列表添加“正在加载”展示界面，不执行则以默认样式展示。  |  要求传入layout资源布局 |
 | setLoadFailedView(loadFailedViewRes: Int)  |  为该列表添加“加载失败”展示界面，不执行则以默认样式展示。  |  要求传入layout资源布局 |
@@ -408,6 +409,7 @@ class FailedInteractiveActivity : SingleListActivity() {
 | showLoadFailed()  |  手动展示“加载”界面。  |    |
 | addOnItemViewClickListener(onItemViewClickListener: OnItemViewClickListener)  |  对该列表item中所有view进行监听器，。  |  OnItemViewClickListener实现对象  |
 
+
 ##### 接口OnItemViewClickListener中的回调返回对象ClickBean< T >
 
 | 属性 | 意义  |
@@ -415,5 +417,16 @@ class FailedInteractiveActivity : SingleListActivity() {
 | sLRecyclerView: SLRecyclerView< T >  |  当前点击所处的RecylerView对象  |
 | viewOnClick: View  |  当前item上被直接点击的View  |
 | viewsOnClick: ArrayList<View>  |  当前item中,摆放在点击位置的上所有的View集合  |
-| data: T?  |  当前item的数据  |
+| data: Any?  |  当前item的数据，考虑到通用性，故不会限制为T泛型对应的类型，而是转为Any（Java中的Object），开发者可自行转型  |
 | position: Int  |  当前item的position位置  |
+
+
+##### 类SLAdapter< T >
+
+| 方法 | 意义  |  参数说明  | 返回值说明 |
+| ------------ | ------------ | ------------ | ------------ |
+| setData(dataList: List< T >)  |  为适配器设置数据，只需设置一次，建议在RecyclerView.setAdapter()前执行  | 数据集合 |  |
+| getData():List< T >  |  获取当前数据集合  |  | 返回当前数据集合 |
+| setItemLayoutResId() : Int  |  设置item的布局资源Id(抽象重写方法)  |  | 在返回值传入xml布局资源即可 |
+| onBindViewHolder(holder: SLHolder, data: T?, position: Int)  |  item绑定(抽象重写方法，item的数据设值在这里进行)  | 1.holder：当前Adapter所创建的viewHolder对象。  2.data：当前position位置的数据实体。   3.position：当前item位置。| |
+| <V : View> getView(viewResId: Int): V?  |  相当于做了复用优化的findViewById，返回View对象  | view资源Id | 返回View对象 |
