@@ -22,7 +22,7 @@ data class ClickBean<T>(
         /**
          * 当前item的数据
          */
-        , @JvmField var data: T?
+        , @JvmField var data: Any?
         /**
          * 当前item的position位置
          */
